@@ -2,9 +2,9 @@ import React from 'react';
 
 interface FormProps {}
 
-export const Form = ({}: FormProps) => {
+export const Form = (_props: FormProps) => {
   return (
-    <div>
+    <div class="min-h-screen flex flex-col">
       <p>some text</p>
     </div>
   );

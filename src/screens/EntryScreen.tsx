@@ -3,7 +3,7 @@ import { Form } from '../components/Form';
 
 export const EntryScreen = () => {
   return (
-    <div>
+    <div className="EntryScreen">
       <Form />
     </div>
   );

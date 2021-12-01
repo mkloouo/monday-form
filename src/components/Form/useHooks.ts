@@ -58,9 +58,10 @@ export const useHooks = (_props: Props) => {
     (e: any) => {
       e.preventDefault();
 
-      if (selectedBoard?.id && selectedGroup?.id && itemNameRef.current?.value) {
+      if (selectedBoard?.id && selectedGroup?.id && itemNameRef.current?.value && itemDescriptionRef.current?.value) {
         return MondayApi.createItem(selectedBoard.id, selectedGroup.id, {
           name: itemNameRef.current?.value,
+          description: itemDescriptionRef.current?.value,
         });
       }
 

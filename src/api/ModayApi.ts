@@ -62,9 +62,9 @@ export const MondayApi = {
 
     return response.json() as unknown as MondayGetGroupsResponse;
   },
-  createItem: async (boardId: string, groupId: string, item: { name: string; description?: string }) => {
+  createItem: async (boardId: string, groupId: string, item: { name: string; description: string }) => {
     const query = `mutation {
-      create_item (board_id: ${boardId}, group_id: \"${groupId}\", item_name: \"${item.name}\") {
+      create_item (board_id: ${boardId}, group_id: "${groupId}", item_name: "${item.name}" column_values: { "text": "${item.description}" }) {
           id
       }
   }`;
@@ -80,6 +80,10 @@ export const MondayApi = {
       }),
     });
 
-    return response.json() as unknown as MondayGetGroupsResponse;
+    const body = await response.json();
+
+    console.log('[create item] body:', JSON.stringify(body, null, 1));
+
+    return body as unknown as MondayGetGroupsResponse;
   },
 };

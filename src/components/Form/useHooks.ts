@@ -6,18 +6,24 @@ interface Props {}
 export const useHooks = (_props: Props) => {
   const [selectedBoard, setSelectedBoard] = useState<MondayBoard | undefined>();
   const [boards, setBoards] = useState<Array<MondayBoard> | undefined>();
+
+  const selectBoardByValue = useCallback((value?: string) => boards?.find((board) => board.name === value), [boards]);
+
   const onSelectedBoardChange = useCallback(
     (target: any) => {
-      setSelectedBoard(boards?.find((board) => board.name === target.value));
+      setSelectedBoard(selectBoardByValue(target.value));
     },
-    [boards]
+    [selectBoardByValue]
   );
 
   const [selectedGroup, setSelectedGroup] = useState<MondayGroup | undefined>();
   const [groups, setGroups] = useState<Array<MondayGroup> | undefined>();
-  const onSelectedGroupChange = useCallback((target: any) => {
-    console.log('[onSelectedGroupChange] value:', target.value);
-  }, []);
+  const onSelectedGroupChange = useCallback(
+    (target: any) => {
+      setSelectedGroup(groups?.find((group) => group.title === target.value));
+    },
+    [groups]
+  );
 
   const itemNameRef = useRef<HTMLInputElement>(null);
   const itemDescriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -32,17 +38,16 @@ export const useHooks = (_props: Props) => {
   }, [boards]);
 
   useEffect(() => {
-    const boardId = boards?.find((board) => board.name === selectedBoard?.name)?.id;
-    console.log('boardId:', boardId);
+    const boardId = selectBoardByValue(selectedBoard?.name)?.id;
 
     if (boardId) {
       MondayApi.getGroups(boardId).then((response) => {
-        console.log(JSON.stringify(response, null, 1));
+        console.log('response.data.boards[0].groups:', JSON.stringify(response.data.boards[0].groups, null, 1));
 
         setGroups(response.data.boards[0].groups);
       });
     }
-  }, [boards, selectedBoard]);
+  }, [boards, selectBoardByValue, selectedBoard]);
 
   const onSubmit = useCallback((e: any) => {
     e.preventDefault();
@@ -52,13 +57,18 @@ export const useHooks = (_props: Props) => {
     console.log('select file:', selectFileRef.current?.value);
   }, []);
 
+  const mapGroupToItem = (group?: MondayGroup) => ({
+    id: group?.position,
+    name: group?.title,
+  });
+
   return {
     selectedBoard,
     onSelectedBoardChange,
     boards,
-    selectedGroup,
+    selectedGroup: mapGroupToItem(selectedGroup),
     onSelectedGroupChange,
-    groups,
+    groups: groups?.map(mapGroupToItem),
     itemNameRef,
     itemDescriptionRef,
     selectFileRef,

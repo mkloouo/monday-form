@@ -1,7 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MondayApi, MondayBoard, MondayGroup } from '../../api/ModayApi';
 
 interface Props {}
+
+const mapGroupToItem = (group?: MondayGroup) => ({
+  id: group?.id,
+  name: group?.title,
+});
 
 export const useHooks = (_props: Props) => {
   const [selectedBoard, setSelectedBoard] = useState<MondayBoard | undefined>();
@@ -42,36 +47,39 @@ export const useHooks = (_props: Props) => {
 
     if (boardId) {
       MondayApi.getGroups(boardId).then((response) => {
-        console.log('response.data.boards[0].groups:', JSON.stringify(response.data.boards[0].groups, null, 1));
-
         setGroups(response.data.boards[0].groups);
       });
     }
   }, [boards, selectBoardByValue, selectedBoard]);
 
-  const onSubmit = useCallback((e: any) => {
-    e.preventDefault();
+  const onCreateTaskPress = useCallback(
+    (e: any) => {
+      e.preventDefault();
 
-    console.log('item name:', itemNameRef.current?.value);
-    console.log('item description:', itemDescriptionRef.current?.value);
-    console.log('select file:', selectFileRef.current?.value);
-  }, []);
+      if (selectedBoard?.id && selectedGroup?.id && itemNameRef.current?.value) {
+        return MondayApi.createItem(selectedBoard.id, selectedGroup.id, {
+          name: itemNameRef.current?.value,
+        });
+      }
 
-  const mapGroupToItem = (group?: MondayGroup) => ({
-    id: group?.position,
-    name: group?.title,
-  });
+      alert('You have not filled all the fields.');
+    },
+    [selectedBoard, selectedGroup]
+  );
+
+  const mappedSelectedGroup = useMemo(() => mapGroupToItem(selectedGroup), [selectedGroup]);
+  const mappedGroups = useMemo(() => groups?.map(mapGroupToItem), [groups]);
 
   return {
     selectedBoard,
     onSelectedBoardChange,
     boards,
-    selectedGroup: mapGroupToItem(selectedGroup),
+    selectedGroup: mappedSelectedGroup,
     onSelectedGroupChange,
-    groups: groups?.map(mapGroupToItem),
+    groups: mappedGroups,
     itemNameRef,
     itemDescriptionRef,
     selectFileRef,
-    onSubmit,
+    onCreateTaskPress,
   };
 };

@@ -14,9 +14,8 @@ interface MondayGetBoardsResponse {
 }
 
 export interface MondayGroup {
+  id: string;
   title: string;
-  color: string;
-  position: string;
 }
 
 interface MondayGetGroupsResponse {
@@ -49,6 +48,26 @@ export const MondayApi = {
   },
   getGroups: async (id: string) => {
     const query = `query { boards (ids: ${id}) { groups { title color position }}}`;
+    const response = await fetch(config.apis.monday.url, {
+      method: 'post',
+      headers: {
+        Authorization: config.apis.monday.token,
+        'Accept-Content': APPLICATION_JSON_CONTENT,
+        'Content-Type': APPLICATION_JSON_CONTENT,
+      },
+      body: JSON.stringify({
+        query,
+      }),
+    });
+
+    return response.json() as unknown as MondayGetGroupsResponse;
+  },
+  createItem: async (boardId: string, groupId: string, item: { name: string; description?: string }) => {
+    const query = `mutation {
+      create_item (board_id: ${boardId}, group_id: \"${groupId}\", item_name: \"${item.name}\") {
+          id
+      }
+  }`;
     const response = await fetch(config.apis.monday.url, {
       method: 'post',
       headers: {

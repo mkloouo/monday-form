@@ -12,7 +12,18 @@ import { useHooks } from './useHooks';
 interface FormProps {}
 
 export const Form = (_props: FormProps) => {
-  const { boardRef, groupRef, itemNameRef, itemDescriptionRef, selectFileRef, onSubmit } = useHooks({});
+  const {
+    selectedBoard,
+    onSelectedBoardChange,
+    boards,
+    selectedGroup,
+    onSelectedGroupChange,
+    groups,
+    itemNameRef,
+    itemDescriptionRef,
+    selectFileRef,
+    onSubmit,
+  } = useHooks({});
 
   return (
     <>
@@ -25,12 +36,11 @@ export const Form = (_props: FormProps) => {
 
                 <div className="grid grid-cols-6 gap-6">
                   <div className="col-span-6 sm:col-span-3">
-                    <Selector title="Board" ref={boardRef} />
+                    <Selector title="Board" value={selectedBoard} onChange={onSelectedBoardChange} options={boards} />
                   </div>
                   <div className="col-span-6 sm:col-span-3">
-                    <Selector title="Group" ref={groupRef} />
+                    <Selector title="Group" value={selectedGroup} onChange={onSelectedGroupChange} options={groups} />
                   </div>
-
                   <div className="col-span-6 sm:col-span-4">
                     <TextInput title="Item name" ref={itemNameRef} />
                   </div>

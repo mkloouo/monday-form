@@ -1,8 +1,33 @@
 import React from 'react';
 
+import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+
+import { Header } from '../Header';
+import { Selector } from '../Selector';
+import { TextInput } from '../TextInput';
+import { TextArea } from '../TextArea';
+import { ImageInput } from '../ImageInput';
+import { useHooks } from './useHooks';
+
 interface FormProps {}
 
+/**
+ *
+<div class="inline-block relative w-64">
+  <select class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+    <option>Really long option that will likely overlap the chevron</option>
+    <option>Option 2</option>
+    <option>Option 3</option>
+  </select>
+  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+  </div>
+</div>
+ */
+
 export const Form = (_props: FormProps) => {
+  const { boardRef, groupRef, itemNameRef, itemDescriptionRef, selectFileRef, onSubmit } = useHooks({});
+
   return (
     <>
       <div className="mt-10 sm:mt-0">
@@ -10,133 +35,30 @@ export const Form = (_props: FormProps) => {
           <form action="#" method="POST">
             <div className="shadow overflow-hidden sm:rounded-md">
               <div className="px-4 py-5 bg-white sm:p-6">
-                <div className="mb-16">
-                  <h1 className="text-xl tracking-tight font-bold text-gray-900 sm:text-2xl md:text-4xl">
-                    CREATING AN ITEM
-                  </h1>
-                </div>
+                <Header title="Creating an item" />
+
                 <div className="grid grid-cols-6 gap-6">
                   <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="board-input"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Board
-                    </label>
-                    <input
-                      type="text"
-                      name="board-input"
-                      id="board-input"
-                      autoComplete="given-name" // TODO (1): change input to autocomplete board
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                    <Selector title="Board" ref={boardRef} />
                   </div>
-
                   <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="group-input"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Group
-                    </label>
-                    <input
-                      type="text"
-                      name="group-input"
-                      id="group-input"
-                      autoComplete="family-name" // TODO (2): change input to autocomplete group
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                    <Selector title="Group" ref={groupRef} />
                   </div>
 
                   <div className="col-span-6 sm:col-span-4">
-                    <label
-                      htmlFor="item-name"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Item name
-                    </label>
-                    <input
-                      type="text"
-                      name="item-name"
-                      id="item-name"
-                      autoComplete="email" // TODO (3): change input to generic text
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                    <TextInput title="Item name" ref={itemNameRef} />
                   </div>
-
                   <div className="col-span-6 sm:col-span-4">
-                    <label
-                      htmlFor="item-name"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Item name
-                    </label>
-                    <input
-                      type="text"
-                      name="item-name"
-                      id="item-name"
-                      autoComplete="email" // TODO (3): change input to generic text
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                    <TextArea title="Item description" ref={itemDescriptionRef} />
                   </div>
-
-                  {
-                    // TODO (4): use for board and group selection
-                    /* <div className="col-span-6 sm:col-span-3">
-                    <label
-                      htmlFor="country"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Country
-                    </label>
-                    <select
-                      id="country"
-                      name="country"
-                      autoComplete="country-name"
-                      className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                      <option>United States</option>
-                      <option>Canada</option>
-                      <option>Mexico</option>
-                    </select>
-                  </div> */
-                  }
-
-                  <div className="col-span-6">
-                    <label
-                      htmlFor="item-description"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Item description
-                    </label>
-                    <input
-                      type="text"
-                      name="item-description"
-                      id="item-description"
-                      autoComplete="item-description" // TODO (5): change input to generic text
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-                    <label
-                      htmlFor="image"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      add image
-                    </label>
-                    <input
-                      type="text"
-                      name="image"
-                      id="image"
-                      autoComplete="address-level2" // TODO (6): add file input
-                      className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                    />
+                  <div className="col-span-6 mt-10">
+                    <ImageInput title={'Select a file'} icon={faCloudUploadAlt} ref={selectFileRef} />
                   </div>
                 </div>
               </div>
               <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                 <button
+                  onClick={onSubmit}
                   type="submit"
                   className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >

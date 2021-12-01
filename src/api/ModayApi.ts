@@ -47,7 +47,7 @@ export const MondayApi = {
     return response.json() as unknown as MondayGetBoardsResponse;
   },
   getGroups: async (id: string) => {
-    const query = `query { boards (ids: ${id}) { groups { title color position }}}`;
+    const query = `query { boards (ids: ${id}) { groups { id title }}}`;
     const response = await fetch(config.apis.monday.url, {
       method: 'post',
       headers: {

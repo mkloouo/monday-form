@@ -47,6 +47,8 @@ export const useHooks = (_props: Props) => {
 
     if (boardId) {
       MondayApi.getGroups(boardId).then((response) => {
+        console.log('response.data.boards[0].groups:', JSON.stringify(response.data.boards[0].groups, null, 1));
+
         setGroups(response.data.boards[0].groups);
       });
     }

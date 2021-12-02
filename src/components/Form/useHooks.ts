@@ -36,8 +36,8 @@ export const useHooks = (_props: Props) => {
 
   useEffect(() => {
     if (!boards) {
-      MondayApi.getBoards().then((response) => {
-        setBoards(response.data.boards);
+      MondayApi.get.boards().then((res) => {
+        setBoards(res.data.boards);
       });
     }
   }, [boards]);
@@ -46,20 +46,24 @@ export const useHooks = (_props: Props) => {
     const boardId = selectBoardByValue(selectedBoard?.name)?.id;
 
     if (boardId) {
-      MondayApi.getGroups(boardId).then((response) => {
-        console.log('response.data.boards[0].groups:', JSON.stringify(response.data.boards[0].groups, null, 1));
-
-        setGroups(response.data.boards[0].groups);
+      MondayApi.get.groups(boardId).then((res) => {
+        setGroups(res.data.boards[0].groups);
       });
     }
   }, [boards, selectBoardByValue, selectedBoard]);
+
+  useEffect(() => {
+    if (selectedBoard) {
+      MondayApi.get.item.fields(selectedBoard!.id!);
+    }
+  }, [selectedBoard]);
 
   const onCreateTaskPress = useCallback(
     (e: any) => {
       e.preventDefault();
 
       if (selectedBoard?.id && selectedGroup?.id && itemNameRef.current?.value && itemDescriptionRef.current?.value) {
-        return MondayApi.createItem(selectedBoard.id, selectedGroup.id, {
+        return MondayApi.create.item(selectedBoard.id, selectedGroup.id, {
           name: itemNameRef.current?.value,
           description: itemDescriptionRef.current?.value,
         });
